@@ -157,4 +157,28 @@ class Lyrics {
             }
         }
     }
+
+    
+    public function deleteLyricsById() {
+        // GET
+        // token
+        // id
+        $get = (object) $_GET;
+        $db = new Database();
+        $conn = $db->conn;
+        $token = $get->token;
+                
+        $stmt = $conn->query("SELECT * FROM users WHERE token = '$token'");
+        $user = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if(!empty($user)) {
+            $user = (object) $user[0];
+            $stmt = $conn->query("DELETE FROM lyrics WHERE id = '$get->id'");
+            $collections = (object) $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            response("success", $collections, "Lyric delete successfully");
+        } else {
+            response("error", [], "Token not found");
+        }
+    }
 }

@@ -1,5 +1,21 @@
 <?php
 
+header('Access-Control-Allow-Origin: *');
+
+// Permitir los siguientes encabezados
+header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+
+// Permitir los siguientes métodos HTTP
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+header("Allow: GET, POST, OPTIONS, PUT, DELETE");
+
+// Obtener el método de la solicitud
+$method = $_SERVER['REQUEST_METHOD'];
+
+// Si el método es OPTIONS, finalizar la solicitud
+if ($method == "OPTIONS") {
+    die();
+}
 // activate debug PHP
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
