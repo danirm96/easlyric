@@ -155,6 +155,8 @@ class Lyrics {
             if($stmt->execute()) {
                 response('success', $user, 'Lyric updated successfully');
             }
+        }else {
+            response("error", [], "Token not found");
         }
     }
 

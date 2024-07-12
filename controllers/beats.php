@@ -28,7 +28,7 @@ class Beats {
 
             try {
 
-                $stmt = $conn->prepare("INSERT INTO beats (user_id, title, youtube_url, tags) VALUES ('$user->id', '$name', '$youtube_url', '$tags')");
+                $stmt = $conn->prepare("INSERT INTO beats (user_id, title, youtube_url, tag) VALUES ('$user->id', '$name', '$youtube_url', '$tags')");
                 $stmt->execute();
 
                 $id = $conn->lastInsertId();
@@ -74,12 +74,15 @@ class Beats {
         $conn = $db->conn;
         $token = $get->token;
                 
-        $stmt = $conn->query("SELECT * FROM users WHERE token = '$token'");
+        $stmt = $conn->query("SELECT * FROM users u WHERE token = '$token'");
         $user = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if(!empty($user)) {
             $user = (object) $user[0];
-            $stmt = $conn->query("SELECT * FROM beats");
+            $stmt = $conn->query("  SELECT b.*, u.username AS user_used
+                                    FROM beats b 
+                                    LEFT JOIN lyrics l ON l.youtube_url = b.youtube_url 
+                                    LEFT JOIN users u ON l.user_id = u.id");
             $collections = (object) $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             response("success", $collections, "Beats found successfully");
@@ -103,7 +106,7 @@ class Beats {
 
         if(!empty($user)) {
             $user = (object) $user[0];
-            $stmt = $conn->query("SELECT * FROM beats WHERE user_id = '$user->id' AND tags LIKE '%$get->name%'");
+            $stmt = $conn->query("SELECT * FROM beats WHERE user_id = '$user->id' AND tag LIKE '%$get->name%'");
             $collections = (object) $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             response("success", $collections, "Collections found successfully");
